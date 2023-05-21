@@ -9,18 +9,17 @@ part 'readme_state.dart';
 
 class ReadmeCubit extends Cubit<ReadmeState> {
   final ReadmeRepositoryImpl readmeRepositoryImpl;
-  ReadmeCubit({required this.readmeRepositoryImpl}) : super(ReadmeInitial());
+  ReadmeCubit({
+    required this.readmeRepositoryImpl,
+  }) : super(ReadmeInitial());
 
-  Future<void> getReadme({RepoStarred? repo}) async {
+  Future<void> getReadme({RepoStarred? repo, String? fullname}) async {
     try {
       emit(ReadmeLoading());
-      print('66666666666');
 
       Readme readme = await readmeRepositoryImpl.getReadme(repo: repo);
-      print('777777777777777');
 
       final starstate = await readmeRepositoryImpl.getStarState(repo: repo);
-      print('88888888888888888888888');
 
       emit(ReadmeLoaded(readme: readme, starstate: starstate));
     } catch (e) {
@@ -35,7 +34,6 @@ class ReadmeCubit extends Cubit<ReadmeState> {
 
       // emit(RemovStar(starstate: starstate));
       getReadme(repo: repo);
-      print('88888888888888888888888');
     } catch (e) {
       emit(ReadmeError(errorMessage: e.toString()));
     }

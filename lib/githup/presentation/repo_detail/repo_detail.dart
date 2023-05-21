@@ -12,13 +12,15 @@ import 'cubit/readme_cubit.dart';
 // ignore: must_be_immutable
 class RepoDetailPage extends StatelessWidget {
   RepoStarred? repo;
-  RepoDetailPage({Key? key, this.repo}) : super(key: key);
+  String? fullname;
+  RepoDetailPage({Key? key, this.repo, this.fullname}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           ReadmeCubit(readmeRepositoryImpl: ReadmeRepositoryImpl())
-            ..getReadme(repo: repo),
+            ..getReadme(repo: repo, fullname: fullname),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,

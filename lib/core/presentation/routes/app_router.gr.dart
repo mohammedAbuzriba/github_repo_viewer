@@ -73,6 +73,7 @@ class AppRouter extends _i7.RootStackRouter {
         child: _i6.RepoDetailPage(
           key: args.key,
           repo: args.repo,
+          fullname: args.fullname,
         ),
       );
     },
@@ -201,12 +202,14 @@ class RepoDetailRoute extends _i7.PageRouteInfo<RepoDetailRouteArgs> {
   RepoDetailRoute({
     _i8.Key? key,
     _i9.RepoStarred? repo,
+    String? fullname,
   }) : super(
           RepoDetailRoute.name,
           path: '/repostarred',
           args: RepoDetailRouteArgs(
             key: key,
             repo: repo,
+            fullname: fullname,
           ),
         );
 
@@ -217,14 +220,17 @@ class RepoDetailRouteArgs {
   const RepoDetailRouteArgs({
     this.key,
     this.repo,
+    this.fullname,
   });
 
   final _i8.Key? key;
 
   final _i9.RepoStarred? repo;
 
+  final String? fullname;
+
   @override
   String toString() {
-    return 'RepoDetailRouteArgs{key: $key, repo: $repo}';
+    return 'RepoDetailRouteArgs{key: $key, repo: $repo, fullname: $fullname}';
   }
 }

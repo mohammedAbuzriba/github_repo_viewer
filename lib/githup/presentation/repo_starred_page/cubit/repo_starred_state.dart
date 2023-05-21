@@ -1,61 +1,38 @@
 part of 'repo_starred_cubit.dart';
 
-abstract class RepoStarredState extends Equatable {
-  const RepoStarredState();
+enum Status { init, loading, success, error, logout }
 
-  @override
-  List<Object> get props => [];
-}
+class RepoState extends Equatable {
+  final List<RepoStarred>? repoStarred;
+  final RepoSearch? repoSearch;
+  final bool? hasReachedMax;
+  final int? currentPage;
+  final Status? status;
 
-class RepoStarredInitial extends RepoStarredState {}
-
-class RepoStarredLoading extends RepoStarredState {}
-
-// class RepoStarredLoaded extends RepoStarredState {
-//   final List<RepoStarred> repoStarred;
-
-//   const RepoStarredLoaded({required this.repoStarred});
-
-//   @override
-//   List<Object> get props => [repoStarred];
-// }
-class RepoStarredLoaded extends RepoStarredState {
-  final List<RepoStarred> repoStarred;
-  final bool hasReachedMax;
-  final int currentPage;
-
-  const RepoStarredLoaded(
-      {required this.repoStarred,
+  const RepoState(
+      {this.repoStarred = const [],
+      this.repoSearch,
       this.hasReachedMax = false,
-      this.currentPage = 1});
+      this.currentPage,
+      this.status = Status.init});
 
   @override
-  List<Object> get props => [repoStarred, hasReachedMax, currentPage];
-}
+  List<Object?> get props =>
+      [repoStarred, repoSearch, hasReachedMax, currentPage, status];
 
-class PaginationSuccess extends RepoStarredState {
-  final List<RepoStarred> repoStarred;
-  final bool hasReachedMax;
-
-  const PaginationSuccess(
-      {required this.repoStarred, required this.hasReachedMax});
-
-  PaginationSuccess copyWith({
+  RepoState copyWith({
     List<RepoStarred>? repoStarred,
+    RepoSearch? repoSearch,
     bool? hasReachedMax,
+    int? currentPage,
+    Status? status,
   }) {
-    return PaginationSuccess(
+    return RepoState(
       repoStarred: repoStarred ?? this.repoStarred,
+      repoSearch: repoSearch ?? this.repoSearch,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      currentPage: currentPage ?? this.currentPage,
+      status: status ?? this.status,
     );
   }
-}
-
-class RepoStarredError extends RepoStarredState {
-  final String errorMessage;
-
-  const RepoStarredError({required this.errorMessage});
-
-  @override
-  List<Object> get props => [errorMessage];
 }
