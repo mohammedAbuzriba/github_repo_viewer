@@ -35,6 +35,7 @@ class AppWidget extends ConsumerWidget {
       );
     });
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: 'Repo App',
       routerDelegate: appRouter.delegate(),
       routeInformationParser: appRouter.defaultRouteParser(),
