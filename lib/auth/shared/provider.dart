@@ -11,14 +11,6 @@ final flutterSecureStorage = Provider((ref) => const FlutterSecureStorage());
 
 final dioForAuthProvider = Provider((ref) => Dio());
 
-// final oAuth2InterceptorProvider = Provider(
-//   (ref) => OAuth2Interceptor(
-//     ref.watch(githubAuthenticatorProvider),
-//     ref.watch(authNotifierProvider.notifier),
-//     ref.watch(dioForAuthProvider),
-//   ),
-// );
-
 final credentialStorageProvider = Provider<CredentialStorage>(
   (ref) => SecureCredentialStorage(
     ref.watch(flutterSecureStorage),
