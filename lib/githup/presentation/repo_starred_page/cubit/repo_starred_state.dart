@@ -1,6 +1,6 @@
 part of 'repo_starred_cubit.dart';
 
-enum Status { init, loading, success, error, logout }
+enum Status { loading, success, error, logout }
 
 class RepoState extends Equatable {
   final List<RepoStarred>? repoStarred;
@@ -13,8 +13,8 @@ class RepoState extends Equatable {
       {this.repoStarred = const [],
       this.repoSearch,
       this.hasReachedMax = false,
-      this.currentPage,
-      this.status = Status.init});
+      this.currentPage = 1,
+      this.status = Status.loading});
 
   @override
   List<Object?> get props =>

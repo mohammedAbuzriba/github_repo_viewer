@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +25,16 @@ class RepoDetailPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              AutoRouter.of(context).pop();
+            },
+            disabledColor: Colors.black,
+          ),
           title: Row(
             children: [
               Hero(
@@ -72,6 +83,11 @@ class RepoDetailPage extends StatelessWidget {
         ),
         body: BlocBuilder<ReadmeCubit, ReadmeState>(
           builder: (context, state) {
+            if (state is ReadmeError) {
+              const Center(
+                child: Text('No Internet'),
+              );
+            }
             if (state is ReadmeLoaded) {
               return Markdown(
                 data: decose(state),
@@ -89,18 +105,6 @@ class RepoDetailPage extends StatelessWidget {
                   ),
                 ),
               );
-              // decose(state);
-              // WebView(
-              //   javascriptMode: JavascriptMode.unrestricted,
-              //   initialUrl: state.readme.htmlUrl,
-              //   onWebViewCreated: (controller) {
-              //     controller.clearCache();
-              //     CookieManager().clearCookies();
-              //   },
-              //   navigationDelegate: (navReq) {
-              //     return NavigationDecision.navigate;
-              //   },
-              // );
             } else {
               return const Center(
                 child: CircularProgressIndicator(),

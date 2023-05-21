@@ -7,16 +7,15 @@ import '../model/repo_search_model.dart';
 import '../model/repo_starred_model.dart';
 
 abstract class RepoStarredRepository {
-  Future<List<RepoStarred>> getRepoStarred();
+  Future<List<RepoStarred>> getRepoStarred(int page, int perPage);
   Future<RepoSearch> getRepositories({String? searchQuery});
 }
 
 class RepoStarredRepositoryImpl implements RepoStarredRepository {
   final secureStorage = SecureCredentialStorage(const FlutterSecureStorage());
-
   @override
-  Future<List<RepoStarred>> getRepoStarred() async {
-    const String baseeUrl = 'https://api.github.com/user/starred';
+  Future<List<RepoStarred>> getRepoStarred(int page, int perPage) async {
+    const String baseUrl = 'https://api.github.com/user/starred';
     final Dio dio = Dio(
       BaseOptions(
         connectTimeout: const Duration(seconds: 15),
@@ -28,11 +27,13 @@ class RepoStarredRepositoryImpl implements RepoStarredRepository {
       Credentials? credentials = await secureStorage.read();
 
       final response = await dio.get(
-        baseeUrl,
+        baseUrl,
+        queryParameters: {'page': page, 'per_page': perPage},
         options: Options(
-          headers: {'Authorization': 'Bearer ${credentials?.accessToken}'},
+          headers: {'Authorization': 'Bearer ${credentials!.accessToken}'},
         ),
       );
+
       if (response.data != null) {
         List<dynamic> data = response.data;
         List<RepoStarred> repostarred = data.map((repostarredJson) {
@@ -46,6 +47,39 @@ class RepoStarredRepositoryImpl implements RepoStarredRepository {
       throw Exception('Error getting repo: $error');
     }
   }
+
+  // @override
+  // Future<List<RepoStarred>> getRepoStarred(int currentPage, int item) async {
+  //   const String baseeUrl = 'https://api.github.com/user/starred';
+  //   final Dio dio = Dio(
+  //     BaseOptions(
+  //       connectTimeout: const Duration(seconds: 15),
+  //       receiveTimeout: const Duration(seconds: 15),
+  //     ),
+  //   );
+
+  //   try {
+  //     Credentials? credentials = await secureStorage.read();
+
+  //     final response = await dio.get(
+  //       baseeUrl,
+  //       options: Options(
+  //         headers: {'Authorization': 'Bearer ${credentials?.accessToken}'},
+  //       ),
+  //     );
+  //     if (response.data != null) {
+  //       List<dynamic> data = response.data;
+  //       List<RepoStarred> repostarred = data.map((repostarredJson) {
+  //         return RepoStarred.fromJson(repostarredJson);
+  //       }).toList();
+  //       return repostarred;
+  //     } else {
+  //       throw Exception('repo not found');
+  //     }
+  //   } on DioError catch (error) {
+  //     throw Exception('Error getting repo: $error');
+  //   }
+  // }
 
   @override
   Future<RepoSearch> getRepositories({
