@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:github_repo_viewer/githup/presentation/repo_starred_page/widget/data_search.dart';
+import 'package:github_repo_viewer/githup/presentation/repo_starred_page/widget/listitem.dart';
 
 import '../../../auth/intrastructure/credentials_storage/secure_credential_storage.dart';
 import '../../../core/presentation/routes/app_router.gr.dart';
@@ -122,7 +123,11 @@ class _RepoStarredPageState extends State<RepoStarredPage> {
                       return const CircularProgressIndicator();
                     }
                     RepoStarred repo = repoStarred[index];
-                    return listrepo(repo, context);
+                    return ListItem(
+                      repo: repo,
+                      cubit: cubit,
+                    );
+                    // return listrepo(repo, context);
                   },
                 );
               } else {
@@ -135,140 +140,5 @@ class _RepoStarredPageState extends State<RepoStarredPage> {
         ),
       ),
     );
-  }
-
-  ListTile listrepo(RepoStarred repo, BuildContext context) {
-    return ListTile(
-      title: Text(repo.name ?? ''),
-      subtitle: Text(
-        repo.description ?? '',
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      leading: Hero(
-        tag: repo.fullName ?? '',
-        child: CircleAvatar(
-          backgroundImage:
-              CachedNetworkImageProvider(repo.owner?.avatarUrl ?? ''),
-          backgroundColor: Colors.transparent,
-        ),
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.star_border),
-          Text(
-            repo.stargazersCount.toString(),
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ],
-      ),
-      onTap: () {
-        AutoRouter.of(context)
-            .push(
-          RepoDetailRoute(repo: repo, fullname: repo.fullName),
-        )
-            .then((value) {
-          cubit.refresh();
-        });
-      },
-    );
-  }
-}
-
-//* ///////////////////////////////////////////////////////
-//* ///////////////////////////////////////////////////////
-
-class DataSearch extends SearchDelegate<String> {
-  final RepoStarredCubit cubit;
-  DataSearch({required this.cubit});
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(Icons.clear),
-        onPressed: () {
-          cubit.refresh();
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: () {
-        cubit.refresh();
-        close(context, '');
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    // Here we call the search method from our cubit with the current query
-    cubit.getRepositories(searchQuery: query);
-
-    // And build the results based on the state of our cubit
-    return BlocBuilder<RepoStarredCubit, RepoState>(
-      bloc: cubit,
-      builder: (context, state) {
-        if (state.status == Status.success) {
-          return ListView.builder(
-              itemCount: state.repoSearch?.items?.length ?? 0,
-              itemBuilder: (context, index) {
-                final repo = state.repoSearch?.items?[index];
-                return ListTile(
-                  title: Text(repo?.name ?? ''),
-                  subtitle: Text(
-                    repo?.description ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  leading: Hero(
-                    tag: repo?.fullName ?? '',
-                    child: CircleAvatar(
-                      backgroundImage: CachedNetworkImageProvider(
-                          repo?.owner?.avatarUrl ?? ''),
-                      backgroundColor: Colors.transparent,
-                    ),
-                  ),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.star_border),
-                      Text(
-                        repo?.stargazersCount.toString() ?? '',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    AutoRouter.of(context)
-                        .push(
-                      RepoDetailRoute(repo: repo, fullname: repo?.fullName),
-                    )
-                        .then((value) {
-                      cubit.refresh();
-                    });
-                  },
-                );
-              });
-        }
-
-        // cubit.refresh();
-
-        return const Center(child: RefreshProgressIndicator());
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    // For the purpose of this example, we're just going to display no suggestions
-
-    return Container();
   }
 }
