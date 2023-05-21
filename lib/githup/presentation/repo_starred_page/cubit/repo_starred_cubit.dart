@@ -1,11 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-
 import '../../../../auth/intrastructure/credentials_storage/secure_credential_storage.dart';
 import '../../../data/model/repo_search_model.dart';
 import '../../../data/model/repo_starred_model.dart';
 import '../../../data/repositories/repo_starred_repository.dart';
-
 part 'repo_starred_state.dart';
 
 class RepoStarredCubit extends Cubit<RepoState> {
@@ -39,10 +37,7 @@ class RepoStarredCubit extends Cubit<RepoState> {
   }
 
   Future<void> logout() async {
-    print('------clear------');
     await secureStorage.clear();
-    // Do something after credentials are cleared, maybe emit a new state?
-    // emit(MyInitial());
     emit(state.copyWith(status: Status.logout));
   }
 

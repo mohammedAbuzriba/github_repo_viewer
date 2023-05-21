@@ -35,7 +35,6 @@ class ReadmeRepositoryImpl implements ReadmeRepository {
         receiveTimeout: const Duration(seconds: 15),
       ),
     );
-    print('00000000');
     try {
       Credentials? credentials = await secureStorage.read();
       final response = await dio.get(
@@ -44,7 +43,6 @@ class ReadmeRepositoryImpl implements ReadmeRepository {
           headers: {'Authorization': 'Bearer ${credentials?.accessToken}'},
         ),
       );
-      print('11111');
       if (response.data != null) {
         Readme readme = Readme.fromJson(response.data);
         return readme;
@@ -69,7 +67,6 @@ class ReadmeRepositoryImpl implements ReadmeRepository {
     try {
       Credentials? credentials = await secureStorage.read();
 
-      print('$baseeUrl${repo?.fullName}');
       final response = await dio.get(
         '$baseeUrl${repo?.fullName}',
         options: Options(
@@ -104,7 +101,6 @@ class ReadmeRepositoryImpl implements ReadmeRepository {
     try {
       Credentials? credentials = await secureStorage.read();
 
-      print('$baseeUrl${repo?.fullName}');
       final response = await dio.put(
         '$baseeUrl${repo?.fullName}',
         options: Options(
