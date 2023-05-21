@@ -188,6 +188,7 @@ class DataSearch extends SearchDelegate<String> {
       IconButton(
         icon: const Icon(Icons.clear),
         onPressed: () {
+          cubit.refresh();
           query = '';
         },
       ),
