@@ -119,55 +119,56 @@ class _RepoPageState extends State<RepoPage> {
                         Icons.logout,
                         color: Colors.black,
                       )),
-                  IconButton(
-                      onPressed: () {
-                        context.read<RepoStarredCubit>().refresh();
-                      },
-                      icon: const Icon(
-                        Icons.refresh,
-                        color: Colors.black,
-                      )),
                 ],
               );
             },
           )
         ],
       ),
-      body: BlocBuilder<RepoStarredCubit, RepoState>(
-        builder: (context, state) {
-          switch (state.status!) {
-            case Status.loading:
-              return const Center(
-                child: RefreshProgressIndicator(),
-              );
-            case Status.success:
-              final repoStarred = state.repoStarred;
-              return ListView.builder(
-                controller: _scrollController,
-                itemCount: state.hasReachedMax!
-                    ? state.repoStarred!.length
-                    : state.repoStarred!.length + 1,
-                itemBuilder: (context, index) {
-                  return index >= repoStarred!.length
-                      ? const Center(child: CircularProgressIndicator())
-                      : ListItem(
-                          repo: repoStarred[index],
-                          cubit: widget.cubit,
-                        );
-                  // return listrepo(repo, context);
-                },
-              );
-
-            case Status.error:
-              return const Center(
-                child: Text('No Internet'),
-              );
-            case Status.logout:
-              return const Center(
-                child: RefreshProgressIndicator(),
-              );
-          }
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<RepoStarredCubit>().refresh();
         },
+        child: BlocBuilder<RepoStarredCubit, RepoState>(
+          builder: (context, state) {
+            switch (state.status!) {
+              case Status.loading:
+                return const Center(
+                  child: RefreshProgressIndicator(),
+                );
+              case Status.success:
+                final repoStarred = state.repoStarred;
+                return ListView.builder(
+                  controller: _scrollController,
+                  itemCount: state.hasReachedMax!
+                      ? state.repoStarred!.length
+                      : state.repoStarred!.length + 1,
+                  itemBuilder: (context, index) {
+                    return index >= repoStarred!.length
+                        ? const Center(child: CircularProgressIndicator())
+                        : ListItem(
+                            repo: repoStarred[index],
+                            cubit: widget.cubit,
+                          );
+                    // return listrepo(repo, context);
+                  },
+                );
+
+              case Status.error:
+                return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<RepoStarredCubit>().refresh();
+                    },
+                    child: const Center(
+                      child: Text('No Internet'),
+                    ));
+              case Status.logout:
+                return const Center(
+                  child: RefreshProgressIndicator(),
+                );
+            }
+          },
+        ),
       ),
     );
   }

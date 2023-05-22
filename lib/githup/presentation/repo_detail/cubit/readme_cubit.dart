@@ -13,11 +13,16 @@ class ReadmeCubit extends Cubit<ReadmeState> {
 
   Future<void> getReadme({RepoStarred? repo, String? fullname}) async {
     try {
+      print('111111');
       emit(ReadmeLoading());
       Readme readme = await readmeRepositoryImpl.getReadme(repo: repo);
       final starstate = await readmeRepositoryImpl.getStarState(repo: repo);
+      print('222222');
+
       emit(ReadmeLoaded(readme: readme, starstate: starstate));
     } catch (e) {
+      print('3333');
+
       emit(ReadmeError(errorMessage: e.toString()));
     }
   }

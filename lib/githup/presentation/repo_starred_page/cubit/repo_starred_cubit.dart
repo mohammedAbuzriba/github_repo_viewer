@@ -5,6 +5,7 @@ import '../../../../auth/intrastructure/credentials_storage/secure_credential_st
 import '../../../data/model/repo_search_model.dart';
 import '../../../data/model/repo_starred_model.dart';
 import '../../../data/repositories/repo_starred_repository.dart';
+
 part 'repo_starred_state.dart';
 
 class RepoStarredCubit extends Cubit<RepoState> {
@@ -13,9 +14,18 @@ class RepoStarredCubit extends Cubit<RepoState> {
   final RepoStarredRepositoryImpl repoStarredRepository;
   RepoStarredCubit({required this.repoStarredRepository})
       : super(const RepoState());
+  bool _isProcessing = false;
 
   Future<void> getRepoStarred() async {
-    if (state.hasReachedMax!) return;
+    if (_isProcessing) return;
+
+    _isProcessing = true;
+
+    if (state.hasReachedMax!) {
+      _isProcessing = false;
+      return;
+    }
+    // if (state.hasReachedMax!) return;
 
     // emit(state.copyWith(status: Status.loading));
 
@@ -53,6 +63,7 @@ class RepoStarredCubit extends Cubit<RepoState> {
     } catch (_) {
       emit(state.copyWith(status: Status.error));
     }
+    _isProcessing = false;
   }
 
   // Future<void> getRepoStarred() async {

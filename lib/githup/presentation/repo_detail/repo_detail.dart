@@ -59,6 +59,14 @@ class RepoDetailPage extends StatelessWidget {
           actions: [
             BlocBuilder<ReadmeCubit, ReadmeState>(
               builder: (context, state) {
+                if (state is ReadmeError) {
+                  return const Center(
+                    child: Icon(
+                      Icons.star,
+                      color: Colors.black,
+                    ),
+                  );
+                }
                 if (state is ReadmeLoaded) {
                   return IconButton(
                     icon: Icon(
@@ -83,9 +91,10 @@ class RepoDetailPage extends StatelessWidget {
         ),
         body: BlocBuilder<ReadmeCubit, ReadmeState>(
           builder: (context, state) {
+            print(state);
             if (state is ReadmeError) {
-              const Center(
-                child: Text('No Internet'),
+              return const Center(
+                child: Text('No Read me file'),
               );
             }
             if (state is ReadmeLoaded) {
